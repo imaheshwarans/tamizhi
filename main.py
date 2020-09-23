@@ -9,8 +9,9 @@ import numpy as np
 import cv2
 import os
 from tkinter import messagebox
+import logging
 
-
+logger=logging.getLogger()
 con=[]
 
 # Python code to remove duplicate elements
@@ -32,21 +33,18 @@ def export(con):
                 "\u0B9F""\u0B82","\u0BA3""\u0B82","\u0BA4""\u0B82","\u0BA8""\u0B82",
                 "\u0BAA""\u0B82","\u0BAE""\u0B82","\u0BAF""\u0B82","\u0BB0""\u0B82",
                 "\u0BB2""\u0B82","\u0BB5""\u0B82","\u0BB4""\u0B82","\u0BA9""\u0B82"]
-
-    print('We in export')
     
     #Sorting the stored array
     con.sort()
            
     # Remove duplicate number The first co-ordinate point
     Remove(con)
-    print('\n\n')
 
     #File Write Operation to wirte a chars into a file .txt
     output=open("output.txt","w",encoding="utf-8")
               
     #string name
-    out=""
+    out=''
 
     #printing the 3rd element which means the actual character
     j=0
@@ -60,7 +58,7 @@ def export(con):
     #join all chars into one
     output.write(''.join(out))
                  
-
+    logger.debug("Values exported")
     return
             
 #IMport Image to be tested
@@ -85,7 +83,7 @@ def get_image():
         
         for i in range(len(namelist)):
             
-            name=namelist[i]+".png"
+            name="test-data/"+namelist[i]+".png"
             im = Image.open(name)
             
             #get the file name to print it 
@@ -156,8 +154,6 @@ button4 = tk.Button(frame,
                    height = 4, width = 50)
 
 button4.grid(row=6, column=0, padx=10, pady=20)
-
-
 
 
 root.mainloop()
