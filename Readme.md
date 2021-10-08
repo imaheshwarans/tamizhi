@@ -8,16 +8,5 @@ Based on thersholding segmentation
   PATH
   Numpy 
 
-inistallations are required to run this program 
-this gives 60% result
 
-CNN ML can be used to enhance the result
-
-Enjoy the software-------------------------
-
-Thankyou...
-
-Dears Enhance it .. Make it better
-
-imaheshwarans@gmail.com
 ____________________________________________
