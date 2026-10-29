@@ -58,3 +58,49 @@ Select **Exit** to close the app.
 ## Limitations
 
 The matcher compares grayscale image regions with fixed templates using a similarity threshold of `0.90`. Characters that differ in size, orientation, or appearance from the templates may be missed or misidentified. The current implementation does not reliably remove repeated overlapping matches or arrange detections into normal reading order, so output may contain duplicates or be out of order. Use clear images with characters close in scale and orientation to the supplied templates; review the output rather than treating it as definitive transcription.
+
+## Experimental ML Classifier
+
+The repository also includes an experimental HOG+SVM classifier for **individual, already-cropped glyph images**. It is separate from the GUI, which continues to use template matching. Install the requirements above, then list class IDs and their Unicode labels:
+
+```bash
+python ml_classifier.py labels
+```
+
+Create a `training-data/` directory with numbered class folders. Each folder contains image crops of the character printed by the `labels` command for that ID. For example:
+
+```text
+training-data/
+	00/
+		glyph-a.png
+		glyph-b.png
+	01/
+		glyph-a.png
+		glyph-b.png
+	...
+	25/
+		glyph-a.png
+		glyph-b.png
+```
+
+Use PNG, JPEG, BMP, or TIFF crops. Every class folder you include needs at least two images, and the dataset must contain at least two different classes. For a useful 26-character classifier, collect examples for every class, including variation in handwriting, scale, and image quality. The 26 files in `test-data/` are templates, not a sufficient training set. Keep crops from the same source document or writer together when creating a final evaluation set to avoid overly optimistic results.
+
+Train and evaluate with a held-out split:
+
+```bash
+python ml_classifier.py train --data-dir training-data
+```
+
+The command randomly holds out part of each class for validation, reports the resulting accuracy, and writes the model to `models/glyph-svm.yml`. This random split is useful as a quick check, but can overestimate performance when related crops appear in both splits. Classify an individual cropped glyph with:
+
+```bash
+python ml_classifier.py predict path/to/glyph.png
+```
+
+Prediction prints the class ID and mapped Unicode character; it does not currently report a calibrated confidence score. This model does not detect or crop glyphs from full pages, and its predictions are not yet integrated into the GUI. No LLM features are implemented.
+
+Run the class-mapping tests from the project directory with:
+
+```bash
+python -m unittest discover -s tests
+```
